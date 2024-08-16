@@ -52,7 +52,10 @@
 
                         @if ($webAuthnEnabled)
                             <div class="provider" v-show="showWebAuthn">
-                                <button class="w-full btn-flat" type="button" @click="webAuthn()">{{ __('Log in with Passkey') }}</button>
+                                <button class="w-full btn-flat flex items-center justify-center gap-2" type="button" @click="webAuthn()">
+                                    <svg-icon name="light/key" class="h-5 w-5 rtl:ml-2 ltr:mr-2"></svg-icon>
+                                    {{ __('Log in with Passkey') }}
+                                </button>
                                 <div class="text-red-500 text-xs mt-2 text-center" v-if="showWebAuthnError" v-text="webAuthnError"></div>
                             </div>
                         @endif
@@ -60,7 +63,8 @@
                         @if ($oauth)
                             @foreach ($providers as $provider)
                                 <div class="provider">
-                                    <a href="{{ $provider->loginUrl() }}?redirect={{ parse_url(cp_route('index'))['path'] }}" class="w-full btn-flat">
+                                    <a href="{{ $provider->loginUrl() }}?redirect={{ parse_url(cp_route('index'))['path'] }}" class="w-full btn-flat flex items-center justify-center">
+                                        @if ($provider->icon())<svg-icon default="light/key" name="{{ $provider->icon() }}" class="h-5 w-5 rtl:ml-2 ltr:mr-2"></svg-icon> @endif
                                         {{ __('Log in with :provider', ['provider' => $provider->label()]) }}
                                     </a>
                                 </div>

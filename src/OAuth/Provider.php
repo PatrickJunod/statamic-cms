@@ -19,8 +19,7 @@ class Provider
     public function __construct(
         protected string $name,
         protected array $config = []
-    ) {
-    }
+    ) {}
 
     public function getSocialiteUser()
     {
@@ -127,6 +126,15 @@ class Provider
         return $this->config['label'] ?? Str::title($this->name);
     }
 
+    public function icon()
+    {
+        if (file_exists(statamic_path('resources/svg/icons/light/'.$this->name.'.svg'))) {
+            return 'light/'.$this->name;
+        }
+
+        return null;
+    }
+
     public function config()
     {
         return $this->config;
@@ -167,6 +175,7 @@ class Provider
         return [
             'name' => $this->name,
             'label' => $this->label(),
+            'icon' => $this->icon(),
             'loginUrl' => $this->loginUrl(),
         ];
     }
