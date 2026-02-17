@@ -416,17 +416,20 @@ export default {
 
             if (JSON.stringify(json) === JSON.stringify(oldJson)) return;
 
-            // Temporarily disable debouncing.
-            this.debounceNextUpdate = false;
-
-            this.debounceNextUpdate
-                ? this.updateDebounced(json)
-                : this.update(json);
-
+            const shouldDebounce = this.debounceNextUpdate;
             this.debounceNextUpdate = true;
+
+            if (shouldDebounce) {
+                this.updateDebounced(json);
+            } else {
+                this.updateDebounced.cancel();
+                this.update(json);
+            }
         },
 
         value(value, oldValue) {
+            if (!this.editor) return;
+
             const oldContent = this.editor.getJSON();
             const content = this.valueToContent(value);
 
@@ -526,6 +529,14 @@ export default {
                 const setCacheKey = `${field}.${set}`;
                 const reference = this.publishContainer.reference;
                 const blueprint = this.publishContainer.blueprint.fqh;
+
+	            if (this.meta.new?.hasOwnProperty(set)) {
+		            let meta = this.meta.new[set];
+		            let defaults = this.meta.defaults[set];
+
+		            resolve({ new: meta, defaults });
+		            return;
+	            }
 
                 if (this.setsCache[setCacheKey]) {
                     resolve(this.setsCache[setCacheKey]);
